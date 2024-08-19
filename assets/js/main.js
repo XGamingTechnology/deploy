@@ -319,15 +319,42 @@
 
 })();
 
-// Peta leafleat
 document.addEventListener('DOMContentLoaded', () => {
+  // Inisiasi peta dengan tampilan awal
   var map = L.map('map').setView([-6.914744, 107.609810], 13); // Koordinat awal peta
 
-  // Tambahkan tile layer dari OpenStreetMap
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
+  // Definisikan basemap options
+  const basemaps = {
+      osm: L.tileLayer.provider('OpenStreetMap.Mapnik'),
+      satellite: L.tileLayer.provider('Esri.WorldImagery'),
+      topo: L.tileLayer.provider('OpenTopoMap'),
+      imagery: L.tileLayer.provider('Esri.WorldImagery'),
+      outdoors: L.tileLayer.provider('Thunderforest.Outdoors')
+  };
+
+  // Tambahkan basemap default (OSM)
+  basemaps.osm.addTo(map);
+
+  // Fungsi untuk mengubah basemap
+  function setBasemap(basemap) {
+    if (basemaps[basemap]) {
+      map.eachLayer(function(layer) {
+        if(layer !== basemaps[basemap]) { // Jangan hapus basemap yang baru akan ditambahkan
+          map.removeLayer(layer);
+        }
+      });
+      basemaps[basemap].addTo(map);
+    }
+  }
+
+  // Event listeners untuk setiap item basemap di menu navigasi
+  document.querySelectorAll('input[name="basemap"]').forEach(function(input) {
+    input.addEventListener('change', function() {
+      if (this.checked) {
+        setBasemap(this.id.replace('basemap-', '')); // Misal, basemap-osm jadi osm
+      }
+    });
+  });
 
   // Load GeoJSON data
   fetch('assets/data/kecamatan.geojson')
@@ -338,13 +365,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   layer.bindPopup('<b>Kecamatan:</b> ' + feature.properties.name); // Contoh bind popup ke nama kecamatan
               }
           }).addTo(map);
-
-          // Tambahkan control untuk layer GeoJSON
-          var baseLayers = {
-              "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-          };
-
-         
 
           // Menghubungkan layer dengan checkbox di sidebar
           function toggleLayer(layer, checkboxId) {
@@ -362,5 +382,6 @@ document.addEventListener('DOMContentLoaded', () => {
       })
       .catch(error => console.log(error));
 });
+
 
 
