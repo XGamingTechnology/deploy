@@ -318,70 +318,128 @@
   
 
 })();
-
+// peta
 document.addEventListener('DOMContentLoaded', () => {
   // Inisiasi peta dengan tampilan awal
   var map = L.map('map').setView([-6.914744, 107.609810], 13); // Koordinat awal peta
 
   // Definisikan basemap options
   const basemaps = {
-      osm: L.tileLayer.provider('OpenStreetMap.Mapnik'),
-      satellite: L.tileLayer.provider('Esri.WorldImagery'),
-      topo: L.tileLayer.provider('OpenTopoMap'),
-      imagery: L.tileLayer.provider('Esri.WorldImagery'),
-      outdoors: L.tileLayer.provider('Thunderforest.Outdoors')
+    osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }),
+    satellite: L.tileLayer.provider('Esri.WorldImagery'),
+    topo: L.tileLayer.provider('OpenTopoMap'),
+    imagery: L.tileLayer.provider('Esri.WorldImagery'),
+    outdoors: L.tileLayer.provider('Thunderforest.Outdoors')
   };
 
   // Tambahkan basemap default (OSM)
   basemaps.osm.addTo(map);
 
-  // Fungsi untuk mengubah basemap
-  function setBasemap(basemap) {
-    if (basemaps[basemap]) {
-      map.eachLayer(function(layer) {
-        if(layer !== basemaps[basemap]) { // Jangan hapus basemap yang baru akan ditambahkan
-          map.removeLayer(layer);
-        }
-      });
-      basemaps[basemap].addTo(map);
+  // Membuat pane khusus untuk layer GeoJSON
+  map.createPane('polygonPane');
+  map.getPane('polygonPane').style.zIndex = 400;
+  map.getPane('polygonPane').style['mix-blend-mode'] = 'normal';
+
+  // Fungsi untuk memberi style pada polygon berdasarkan kategori
+  function style_data_0_0(feature) {
+    switch(String(feature.properties['Kategori'])) {
+      case 'Banjir':
+        return {
+          pane: 'polygonPane',
+          opacity: 1,
+          color: 'yellow',  // Outline color
+          dashArray: '',
+          lineCap: 'butt',
+          lineJoin: 'miter',
+          weight: 2.0, 
+          fill: true,
+          fillOpacity: 0.7,
+          fillColor: 'red',  // Fill color for 'Banjir'
+          interactive: true,
+        };
+      case 'tidak banjir':
+        return {
+          pane: 'polygonPane',
+          opacity: 1,
+          color: 'yellow',  // Outline color
+          dashArray: '',
+          lineCap: 'butt',
+          lineJoin: 'miter',
+          weight: 2.0, 
+          fill: true,
+          fillOpacity: 0.7,
+          fillColor: 'grey',  // Fill color for 'tidak banjir'
+          interactive: true,
+        };
+      default:
+        return {
+          pane: 'polygonPane',
+          opacity: 1,
+          color: 'yellow',  // Outline color
+          dashArray: '',
+          lineCap: 'butt',
+          lineJoin: 'miter',
+          weight: 2.0, 
+          fill: true,
+          fillOpacity: 0.7,
+          fillColor: 'rgba(218,178,35,1.0)',  // Default fill color
+          interactive: true,
+        };
     }
   }
 
-  // Event listeners untuk setiap item basemap di menu navigasi
-  document.querySelectorAll('input[name="basemap"]').forEach(function(input) {
-    input.addEventListener('change', function() {
-      if (this.checked) {
-        setBasemap(this.id.replace('basemap-', '')); // Misal, basemap-osm jadi osm
-      }
-    });
+  // Fungsi untuk menambahkan pop-up pada setiap fitur
+  function onEachFeature(feature, layer) {
+    if (feature.properties && feature.properties.Kategori) {
+      layer.bindPopup('Kategori: ' + feature.properties.Kategori);
+    }
+  }
+
+  // Load GeoJSON data dan tampilkan di peta
+  fetch('assets/data/data.geojson') // Ganti dengan path yang benar ke file GeoJSON Anda
+    .then(response => response.json())
+    .then(data => {
+      L.geoJSON(data, {
+        style: style_data_0_0,
+        onEachFeature: onEachFeature // Menambahkan pop-up ke setiap fitur
+      }).addTo(map);
+    })
+    .catch(error => console.error('Error loading the GeoJSON data:', error));
+
+  // Menghubungkan checkbox Layer 1 dengan GeoJSON layer
+  document.getElementById('layer1').addEventListener('change', function() {
+    if (this.checked) {
+      fetch('assets/data/data.geojson')
+        .then(response => response.json())
+        .then(data => {
+          const geojsonLayer = L.geoJSON(data, {
+            style: style_data_0_0,
+            onEachFeature: onEachFeature // Menambahkan pop-up ke setiap fitur
+          }).addTo(map);
+          this.geojsonLayer = geojsonLayer;
+        })
+        .catch(error => console.error('Error loading the GeoJSON data:', error));
+    } else {
+      map.eachLayer(function(layer) {
+        if (layer instanceof L.GeoJSON) {
+          map.removeLayer(layer);
+        }
+      });
+    }
   });
 
-  // Load GeoJSON data
-  fetch('assets/data/kecamatan.geojson')
-      .then(response => response.json())
-      .then(data => {
-          var geojsonLayer = L.geoJSON(data, {
-              onEachFeature: function (feature, layer) {
-                  layer.bindPopup('<b>Kecamatan:</b> ' + feature.properties.name); // Contoh bind popup ke nama kecamatan
-              }
-          }).addTo(map);
-
-          // Menghubungkan layer dengan checkbox di sidebar
-          function toggleLayer(layer, checkboxId) {
-              var checkbox = document.getElementById(checkboxId);
-              checkbox.addEventListener('change', function() {
-                  if (this.checked) {
-                      map.addLayer(layer);
-                  } else {
-                      map.removeLayer(layer);
-                  }
-              });
-          }
-
-          toggleLayer(geojsonLayer, 'layer1');
-      })
-      .catch(error => console.log(error));
+  // Default: Menampilkan Layer 1 saat pertama kali halaman dibuka
+  document.getElementById('layer1').dispatchEvent(new Event('change'));
 });
+
+
+
+
+
+
 
 
 

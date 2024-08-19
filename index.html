@@ -70,7 +70,7 @@
           <!-- peta nav -->
           <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-journal-text"></i><span>Peta Interaktif</span><i class="bi bi-chevron-down ms-auto"></i>
+              <i class="bi bi-journal-text"></i><span>Peta Kabupaten</span><i class="bi bi-chevron-down ms-auto"></i>
             </a>
             <ul id="forms-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
               <li>
@@ -79,15 +79,34 @@
                       <input type="checkbox" id="layer1" checked>
                       <label for="layer1">Layer 1</label>
                   </li>
-                  <li class="layer-control">
-                      <input type="checkbox" id="layer2" checked>
-                      <label for="layer2">Layer 2</label>
-                  </li>
               </ul>
               </li>
             </ul>
+          </li><!-- End peta Nav -->
+          <!-- peta nav -->
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-journal-text"></i><span>Peta Kecamatan</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="forms-nav" class="nav-content collapse" data-bs-parent="#sidebar-nav">
+              <li>
+                <ul id="layerControl" class="nav-content">
+                  <!-- Layer 1 sebagai dropdown -->
+                  <li class="layer-control">
+                    <select id="layer1-dropdown" class="form-select">
+                      <option value="option1">Option 1</option>
+                    </select>
+                  </li>
+                  <!-- Layer 2 sebagai marker -->
+                  <li class="layer-control">
+                    <input type="checkbox" id="layer2" checked>
+                    <label for="layer2">Marker Layer</label>
+                  </li>
+                </ul>
+              </li>
+            </ul>
           </li>
-          <!-- End peta Nav -->
+          <!-- End peta Nav -->  
           <li class="nav-item">
             <a class="nav-link collapsed" data-bs-target="#forms-nav" data-bs-toggle="collapse" href="#">
               <i class="bi bi-journal-text"></i><span>Basemap</span><i class="bi bi-chevron-down ms-auto"></i>
