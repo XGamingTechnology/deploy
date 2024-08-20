@@ -320,8 +320,7 @@
 })();
 // peta
 document.addEventListener('DOMContentLoaded', () => {
-  // Inisiasi peta dengan tampilan awal
-  var map = L.map('map').setView([-6.914744, 107.609810], 13); // Koordinat awal peta
+  var map = L.map('map').setView([-7.0631028, 107.4263623], 10); // Koordinat awal peta
 
   // Definisikan basemap options
   const basemaps = {
@@ -393,21 +392,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Fungsi untuk menambahkan pop-up pada setiap fitur
   function onEachFeature(feature, layer) {
-    if (feature.properties && feature.properties.Kategori) {
-      layer.bindPopup('Kategori: ' + feature.properties.Kategori);
-    }
-  }
+    const wadmkk = feature.properties.WADMKK || 'Tidak tersedia';
+    const wadmkc = feature.properties.WADMKC || 'Tidak tersedia';
+    const jalan = feature.properties.Jalan || 'Tidak tersedia';
+    const titik = feature.properties.Titik || 'Tidak tersedia';
+    const luasGenangan = feature.properties.LuasGenangan || 'Tidak tersedia';
+    const kategori = feature.properties.Kategori || 'Tidak tersedia';
 
-  // Load GeoJSON data dan tampilkan di peta
-  fetch('assets/data/data.geojson') // Ganti dengan path yang benar ke file GeoJSON Anda
-    .then(response => response.json())
-    .then(data => {
-      L.geoJSON(data, {
-        style: style_data_0_0,
-        onEachFeature: onEachFeature // Menambahkan pop-up ke setiap fitur
-      }).addTo(map);
-    })
-    .catch(error => console.error('Error loading the GeoJSON data:', error));
+    const popupContent = `
+      <style>
+        .popup-table {
+          width: 100%;
+          border-collapse: collapse;
+        }
+        .popup-table th, .popup-table td {
+          padding: 8px;
+          text-align: left;
+          border-bottom: 1px solid #ddd;
+        }
+        .popup-table th {
+          background-color: #f2f2f2;
+        }
+      </style>
+      <table class="popup-table">
+        <tr>
+          <th>Nama Kabupaten</th>
+          <td>${wadmkk}</td>
+        </tr>
+        <tr>
+          <th>Nama Kecamatan</th>
+          <td>${wadmkc}</td>
+        </tr>
+        <tr>
+          <th>Ruas Jalan</th>
+          <td>${jalan}</td>
+        </tr>
+        <tr>
+          <th>Jumlah Titik</th>
+          <td>${titik}</td>
+        </tr>
+        <tr>
+          <th>Luas Genangan</th>
+          <td>${luasGenangan}</td>
+        </tr>
+        <tr>
+          <th>Kategori</th>
+          <td>${kategori}</td>
+        </tr>
+      </table>
+    `;
+
+    layer.bindPopup(popupContent);
+  }
 
   // Menghubungkan checkbox Layer 1 dengan GeoJSON layer
   document.getElementById('layer1').addEventListener('change', function() {
@@ -423,17 +459,121 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => console.error('Error loading the GeoJSON data:', error));
     } else {
-      map.eachLayer(function(layer) {
-        if (layer instanceof L.GeoJSON) {
-          map.removeLayer(layer);
-        }
-      });
+      if (this.geojsonLayer) {
+        map.removeLayer(this.geojsonLayer);
+        this.geojsonLayer = null;
+      }
     }
   });
 
   // Default: Menampilkan Layer 1 saat pertama kali halaman dibuka
   document.getElementById('layer1').dispatchEvent(new Event('change'));
+
+  // Menghubungkan checkbox Layer 2 dengan marker layer
+  document.getElementById('layer2').addEventListener('change', function(e) {
+    if (this.checked) {
+      fetch('assets/data/Kabupaten.geojson')
+      .then(response => response.json())
+      .then(data => {
+          const markerLayer = L.geoJSON(data, {
+              pointToLayer: function (feature, latlng) {
+                  return L.marker(latlng);
+              },
+              onEachFeature: function(feature, layer) {
+                  const popupContent = `<b>Nama Kabupaten:</b> ${feature.properties.NamaKabupaten}`;
+                  layer.bindPopup(popupContent);
+              }
+          }).addTo(map);
+
+          this.markerLayer = markerLayer;
+      })
+      .catch(error => console.error('Error loading the GeoJSON data:', error));
+    } else {
+      if (this.markerLayer) {
+        map.removeLayer(this.markerLayer);
+        this.markerLayer = null;
+      }
+    }
+  });
+
+  // Mengisi Dropdown dengan WADMKC dari data.geojson
+  fetch('assets/data/data.geojson')
+    .then(response => response.json())
+    .then(data => {
+        const select = document.getElementById('layer1-dropdown');
+        const wadmkcList = [...new Set(data.features.map(feature => feature.properties.WADMKC))];
+
+        wadmkcList.forEach(wadmkc => {
+            const option = document.createElement('option');
+            option.value = wadmkc;
+            option.text = wadmkc;
+            select.add(option);
+        });
+
+        // Menambahkan event listener untuk dropdown
+        select.addEventListener('change', function() {
+            const selectedWadmkc = this.value;
+
+            if (this.selectedLayer) {
+                map.removeLayer(this.selectedLayer);
+                this.selectedLayer = null;
+            }
+
+            const selectedData = data.features.filter(feature => feature.properties.WADMKC === selectedWadmkc);
+            const selectedLayer = L.geoJSON(selectedData, {
+                style: style_data_0_0, // Menggunakan style yang sudah dibuat sebelumnya
+                onEachFeature: onEachFeature // Menambahkan pop-up seperti sebelumnya
+            }).addTo(map);
+
+            // Meng-zoom ke extent kecamatan yang dipilih
+            if (selectedData.length > 0) {
+                const bounds = L.geoJSON(selectedData).getBounds();
+                map.fitBounds(bounds);
+
+                // Menambahkan marker hanya dari area kecamatan yang dipilih
+                addMarkersForSelectedArea(bounds);
+            }
+
+            this.selectedLayer = selectedLayer;
+        });
+    })
+    .catch(error => console.error('Error loading the GeoJSON data:', error));
+
+  // Fungsi untuk menambahkan marker berdasarkan kecamatan yang dipilih
+  function addMarkersForSelectedArea(bounds) {
+    // Hapus marker layer sebelumnya jika ada
+    if (this.markerLayer) {
+      map.removeLayer(this.markerLayer);
+      this.markerLayer = null;
+    }
+
+    // Muat dan filter marker berdasarkan kecamatan yang dipilih
+    fetch('assets/data/Kabupaten.geojson')
+      .then(response => response.json())
+      .then(data => {
+        const markerData = data.features.filter(feature => {
+          // Ambil koordinat titik marker
+          if (feature.geometry.type === "Point") {
+            const latlng = L.latLng(feature.geometry.coordinates[1], feature.geometry.coordinates[0]);
+            return bounds.contains(latlng);
+          }
+          return false;
+        });
+
+        this.markerLayer = L.geoJSON(markerData, {
+          pointToLayer: function (feature, latlng) {
+            return L.marker(latlng);
+          },
+          onEachFeature: function(feature, layer) {
+            const popupContent = `<b>Nama Kabupaten:</b> ${feature.properties.NamaKabupaten}`;
+            layer.bindPopup(popupContent);
+          }
+        }).addTo(map);
+      })
+      .catch(error => console.error('Error loading the marker data:', error));
+  }
 });
+
 
 
 
