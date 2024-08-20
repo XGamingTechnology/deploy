@@ -1235,6 +1235,7 @@ h6 {
 #map {
   height: 700px; /* Anda bisa menyesuaikan tinggi ini */
   width: 100%;
+  z-index: 10;
 }
 
 /* Checkbox style */
@@ -1259,4 +1260,22 @@ h6 {
   color: #012970;
   cursor: pointer;
   padding-right: 10px;
+}
+
+/* label per kecamatan */
+.polygon-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: rgb(247, 37, 9);
+  /*Warnateks*/background-color: rgba(255, 255, 255, 0.8);
+  /*Latarbelakangputihdengansedikittransparansi*/padding: 2px 4px;
+  /*Paddinguntukmemberiruangdisekitarteks*/border-radius: 3px;
+  border: 1px solid #333;
+  z-index: 9999;
+  /*Z-indextinggiuntukmemastikanberadadiataselemenlain*/pointer-events: none;
+   /* Jangan blokir interaksi dengan peta */
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
 }

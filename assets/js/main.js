@@ -322,37 +322,18 @@
 document.addEventListener('DOMContentLoaded', () => {
   var map = L.map('map').setView([-7.0631028, 107.4263623], 10); // Koordinat awal peta
 
-  // Definisikan basemap options
-  const basemaps = {
-    osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }),
-    satellite: L.tileLayer.provider('Esri.WorldImagery'),
-    topo: L.tileLayer.provider('OpenTopoMap'),
-    imagery: L.tileLayer.provider('Esri.WorldImagery'),
-    outdoors: L.tileLayer.provider('Thunderforest.Outdoors')
-  };
-
   // Tambahkan basemap default (OSM)
-  basemaps.osm.addTo(map);
-
-  // Membuat pane khusus untuk layer GeoJSON
-  map.createPane('polygonPane');
-  map.getPane('polygonPane').style.zIndex = 400;
-  map.getPane('polygonPane').style['mix-blend-mode'] = 'normal';
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
 
   // Fungsi untuk memberi style pada polygon berdasarkan kategori
   function style_data_0_0(feature) {
     switch(String(feature.properties['Kategori'])) {
       case 'Banjir':
         return {
-          pane: 'polygonPane',
-          opacity: 1,
           color: 'yellow',  // Outline color
-          dashArray: '',
-          lineCap: 'butt',
-          lineJoin: 'miter',
           weight: 2.0, 
           fill: true,
           fillOpacity: 0.7,
@@ -361,12 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       case 'tidak banjir':
         return {
-          pane: 'polygonPane',
-          opacity: 1,
           color: 'yellow',  // Outline color
-          dashArray: '',
-          lineCap: 'butt',
-          lineJoin: 'miter',
           weight: 2.0, 
           fill: true,
           fillOpacity: 0.7,
@@ -375,12 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
       default:
         return {
-          pane: 'polygonPane',
-          opacity: 1,
           color: 'yellow',  // Outline color
-          dashArray: '',
-          lineCap: 'butt',
-          lineJoin: 'miter',
           weight: 2.0, 
           fill: true,
           fillOpacity: 0.7,
@@ -390,60 +361,69 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Fungsi untuk menambahkan pop-up pada setiap fitur
-  function onEachFeature(feature, layer) {
-    const wadmkk = feature.properties.WADMKK || 'Tidak tersedia';
-    const wadmkc = feature.properties.WADMKC || 'Tidak tersedia';
-    const jalan = feature.properties.Jalan || 'Tidak tersedia';
-    const titik = feature.properties.Titik || 'Tidak tersedia';
-    const luasGenangan = feature.properties.LuasGenangan || 'Tidak tersedia';
-    const kategori = feature.properties.Kategori || 'Tidak tersedia';
+  // Fungsi untuk menambahkan pop-up dan label pada setiap fitur
+function onEachFeature(feature, layer) {
+  const wadmkk = feature.properties.WADMKK || 'Tidak tersedia';
+  const wadmkc = feature.properties.WADMKC || 'Tidak tersedia';
+  const jalan = feature.properties.Jalan || 'Tidak tersedia';
+  const titik = feature.properties.Titik || 'Tidak tersedia';
+  const luasGenangan = feature.properties.LuasGenangan || 'Tidak tersedia';
+  const kategori = feature.properties.Kategori || 'Tidak tersedia';
 
-    const popupContent = `
-      <style>
-        .popup-table {
-          width: 100%;
-          border-collapse: collapse;
-        }
-        .popup-table th, .popup-table td {
-          padding: 8px;
-          text-align: left;
-          border-bottom: 1px solid #ddd;
-        }
-        .popup-table th {
-          background-color: #f2f2f2;
-        }
-      </style>
-      <table class="popup-table">
-        <tr>
-          <th>Nama Kabupaten</th>
-          <td>${wadmkk}</td>
-        </tr>
-        <tr>
-          <th>Nama Kecamatan</th>
-          <td>${wadmkc}</td>
-        </tr>
-        <tr>
-          <th>Ruas Jalan</th>
-          <td>${jalan}</td>
-        </tr>
-        <tr>
-          <th>Jumlah Titik</th>
-          <td>${titik}</td>
-        </tr>
-        <tr>
-          <th>Luas Genangan</th>
-          <td>${luasGenangan}</td>
-        </tr>
-        <tr>
-          <th>Kategori</th>
-          <td>${kategori}</td>
-        </tr>
-      </table>
-    `;
+  console.log("Adding tooltip for:", wadmkc);  // Debug
 
-    layer.bindPopup(popupContent);
-  }
+  const popupContent = `
+    <style>
+      .popup-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      .popup-table th, .popup-table td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      .popup-table th {
+        background-color: #f2f2f2;
+      }
+    </style>
+    <table class="popup-table">
+      <tr>
+        <th>Nama Kabupaten</th>
+        <td>${wadmkk}</td>
+      </tr>
+      <tr>
+        <th>Nama Kecamatan</th>
+        <td>${wadmkc}</td>
+      </tr>
+      <tr>
+        <th>Ruas Jalan</th>
+        <td>${jalan}</td>
+      </tr>
+      <tr>
+        <th>Jumlah Titik</th>
+        <td>${titik}</td>
+      </tr>
+      <tr>
+        <th>Luas Genangan</th>
+        <td>${luasGenangan}</td>
+      </tr>
+      <tr>
+        <th>Kategori</th>
+        <td>${kategori}</td>
+      </tr>
+    </table>
+  `;
+
+  layer.bindPopup(popupContent);
+
+  // Tambahkan label dengan nama kecamatan
+  layer.bindTooltip(feature.properties.WADMKC, {
+    permanent: true,
+    direction: 'center',
+    className: 'polygon-label'
+  }).openTooltip();
+}
 
   // Menghubungkan checkbox Layer 1 dengan GeoJSON layer
   document.getElementById('layer1').addEventListener('change', function() {
@@ -453,7 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
           const geojsonLayer = L.geoJSON(data, {
             style: style_data_0_0,
-            onEachFeature: onEachFeature // Menambahkan pop-up ke setiap fitur
+            onEachFeature: onEachFeature // Menambahkan pop-up dan label ke setiap fitur
           }).addTo(map);
           this.geojsonLayer = geojsonLayer;
         })
@@ -470,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('layer1').dispatchEvent(new Event('change'));
 
   // Menghubungkan checkbox Layer 2 dengan marker layer
-  document.getElementById('layer2').addEventListener('change', function(e) {
+  document.getElementById('layer2').addEventListener('change', function() {
     if (this.checked) {
       fetch('assets/data/Kabupaten.geojson')
       .then(response => response.json())
@@ -522,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const selectedData = data.features.filter(feature => feature.properties.WADMKC === selectedWadmkc);
             const selectedLayer = L.geoJSON(selectedData, {
                 style: style_data_0_0, // Menggunakan style yang sudah dibuat sebelumnya
-                onEachFeature: onEachFeature // Menambahkan pop-up seperti sebelumnya
+                onEachFeature: onEachFeature // Menambahkan pop-up dan label seperti sebelumnya
             }).addTo(map);
 
             // Meng-zoom ke extent kecamatan yang dipilih
@@ -573,7 +553,6 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(error => console.error('Error loading the marker data:', error));
   }
 });
-
 
 
 
