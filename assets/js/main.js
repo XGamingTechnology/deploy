@@ -394,5 +394,5 @@
       })
       .catch(error => console.error('Error loading the GeoJSON data:', error));
   });
-  
+    
 })();

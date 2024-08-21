@@ -1264,18 +1264,48 @@ h6 {
 
 /* label per kecamatan */
 .polygon-label {
-  font-size: 12px;
+  font-size: 7px;
   font-weight: bold;
-  color: rgb(247, 37, 9);
+  color: rgb(10, 10, 10);
   /*Warnateks*/background-color: rgba(255, 255, 255, 0.8);
-  /*Latarbelakangputihdengansedikittransparansi*/padding: 2px 4px;
-  /*Paddinguntukmemberiruangdisekitarteks*/border-radius: 3px;
+  /*Latarbelakangputihdengansedikittransparansi*/padding: 1px 3px;
+  /*Paddinguntukmemberiruangdisekitarteks*/border-radius: 2px;
   border: 1px solid #333;
   z-index: 9999;
   /*Z-indextinggiuntukmemastikanberadadiataselemenlain*/pointer-events: none;
    /* Jangan blokir interaksi dengan peta */
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  -ms-border-radius: 3px;
-  -o-border-radius: 3px;
+  -webkit-border-radius: 1px;
+  -moz-border-radius: 1px;
+  -ms-border-radius: 1px;
+  -o-border-radius: 1px;
+}
+
+.leaflet-popup-content-wrapper {
+  padding: 5px; /* Kurangi padding untuk membuat konten lebih rapat */
+  overflow-y: auto; /* Tambahkan scrollbar vertikal jika konten terlalu tinggi */
+}
+
+.leaflet-popup-content {
+  font-size: 10px; /* Sesuaikan ukuran font */
+  margin: 0; /* Hapus margin default */
+  padding: 5px; /* Sesuaikan padding agar lebih rapat */
+}
+
+.leaflet-popup-content-wrapper .popup-table {
+  width: auto; /* Biarkan tabel menyesuaikan dengan konten */
+  margin: 0; /* Hapus margin dari tabel */
+  border-collapse: collapse; /* Hilangkan jarak antara border sel */
+}
+
+.leaflet-popup-content-wrapper .popup-table th,
+.leaflet-popup-content-wrapper .popup-table td {
+  padding: 3px 5px; /* Kurangi padding untuk membuat konten lebih rapat */
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  font-size: 10px; /* Sesuaikan ukuran font untuk tabel */
+}
+
+.leaflet-popup-content-wrapper .popup-table th {
+  background-color: #f2f2f2;
+  font-weight: normal; /* Sesuaikan tebal font */
 }
