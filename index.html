@@ -72,7 +72,7 @@
         <li class="nav-item">
           <a class="nav-link" href="report.html">
             <i class="bi bi-map"></i>
-            <span>Report</span>
+            <span>Peta Interaktif</span>
           </a>
         </li>
       </ul>
@@ -81,95 +81,80 @@
 
     <main id="main" class="main">
       <div class="pagetitle">
-        <h1>Report</h1>
+        <h1>Dashboard</h1>
         <nav>
           <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-            <li class="breadcrumb-item active">Report</li>
+            <li class="breadcrumb-item active">Dashboard</li>
           </ol>
         </nav>
       </div>
       <!-- End Page Title -->
+    
       <section class="section report">
         <div class="row">
           <!-- Report container -->
           <div id="report-content">
-            <!-- Isi report bisa berupa iframe, div, atau bisa juga link ke report.html -->
-            <main id="main" class="main">
-              <div class="pagetitle">
-                <h1>Dashboard</h1>
-                <nav>
-                  <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item active">Report</li>
-                    <li class="breadcrumb-item active">Peta Layout</li>
-                  </ol>
-                </nav>
-              </div>
-              <!-- End Page Title -->
-              <section class="section dashboard">
-                <div class="row">
-                  <!-- Left side columns -->
-                  <div class="col-lg-8">
-                    <div class="row">
-                      <!-- Dropdowns for Kabupaten and Kecamatan -->
-                      <div class="col-md-6 mb-3">
-                        <button class="btn btn-primary" id="dropdown-toggle">Klik disini</button>
-                        <div id="dropdowns-container" style="display: none;">
-                          <div class="mb-3">
-                            <label for="kabupaten-dropdown" class="form-label">Pilih Kabupaten</label>
-                            <select id="kabupaten-dropdown" class="form-select">
-                              <option value="">Pilih Kabupaten</option>
-                              <!-- Options will be populated dynamically -->
-                            </select>
-                          </div>
-        
-                          <div class="mb-3">
-                            <label for="kecamatan-dropdown" class="form-label">Pilih Kecamatan</label>
-                            <select id="kecamatan-dropdown" class="form-select">
-                              <option value="">Pilih Kecamatan</option>
-                              <!-- Options will be populated dynamically -->
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                      <!-- End Dropdowns -->
-        
-                      <!-- New div for displaying selected image -->
-                      <div class="col-md-6 mb-3">
-                        <div id="image-container" style="text-align: center;">
-                          <img id="selected-image" src="" alt="Selected Image" style="max-width: 100%; height: auto;" />
-                        </div>
-                      </div>
-                      <div class="col-md-12">
-                        <div class="card">
-                          <div class="card-body">
-                            <h5 class="card-title">Data Table</h5>
-                            <table class="table table-striped" id="data-table">
-                              <thead>
-                                <tr>
-                                  <th>ID</th>
-                                  <th>Kabupaten</th>
-                                  <th>Kecamatan</th>
-                                  <th></th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <!-- Data will be populated here -->
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
+            <!-- Konten utama report -->
+            <div class="col-lg-12">
+              <div class="row">
+                <!-- Dropdowns for Kabupaten and Kecamatan -->
+                <div class="col-md-6 mb-3">
+                  <button class="btn btn-primary" id="dropdown-toggle">Klik disini</button>
+                  <div id="dropdowns-container" style="display: none;">
+                    <div class="mb-3">
+                      <label for="kabupaten-dropdown" class="form-label">Pilih Kabupaten</label>
+                      <select id="kabupaten-dropdown" class="form-select">
+                        <option value="">Pilih Kabupaten</option>
+                        <!-- Options will be populated dynamically -->
+                      </select>
+                    </div>
+    
+                    <div class="mb-3">
+                      <label for="kecamatan-dropdown" class="form-label">Pilih Kecamatan</label>
+                      <select id="kecamatan-dropdown" class="form-select">
+                        <option value="">Pilih Kecamatan</option>
+                        <!-- Options will be populated dynamically -->
+                      </select>
                     </div>
                   </div>
                 </div>
-              </section>
-            </main>
+                <!-- End Dropdowns -->
+    
+                <!-- Div for displaying selected image -->
+                <div class="col-md-6 mb-3">
+                  <div id="image-container" style="text-align: center;">
+                    <img id="selected-image" src="" alt="Selected Image" style="max-width: 100%; height: auto;" />
+                  </div>
+                </div>
+    
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-body">
+                      <h5 class="card-title">Data Table</h5>
+                      <table class="table table-striped" id="data-table">
+                        <thead>
+                          <tr>
+                            <th>ID</th>
+                            <th>Kabupaten</th>
+                            <th>Kecamatan</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <!-- Data will be populated here -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- End of main report content -->
           </div>
         </div>
       </section>
     </main>
+    
     <!-- End #main -->
 
     <!-- ======= Footer ======= -->
