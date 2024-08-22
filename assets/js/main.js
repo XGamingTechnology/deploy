@@ -228,9 +228,9 @@
         const kecamatan = feature.properties.KECAMATAN || 'Tidak tersedia';
         const ruasJalan = feature.properties.NAMA_JALAN || 'Tidak tersedia';
         const luasGenangan = feature.properties.LUASAN_GEN ? `${feature.properties.LUASAN_GEN} m²` : 'Tidak tersedia';
-        const tinggiGenangan = feature.properties.PANJANG_GE ? `${feature.properties.PANJANG_GE} m` : 'Tidak tersedia';
+        const tinggiGenangan = feature.properties.TINGGI_GEN ? `${feature.properties.TINGGI_GEN} m` : 'Tidak tersedia';
         const fotoUrl = feature.properties.FOTO || 'Tidak ada foto';
-
+    
         let popupContent = `
             <style>
                 .popup-table {
@@ -265,7 +265,7 @@
                 </tr>
                 <tr>
                     <th>Tinggi Genangan</th>
-                    <td>${tinggiGenangan}</td>
+                    <td>${tinggiGenangan}</td> <!-- Gunakan nilai yang sesuai dari GeoJSON -->
                 </tr>
                 <tr>
                     <th>Foto</th>
@@ -273,9 +273,10 @@
                 </tr>
             </table>
         `;
-
+    
         layer.bindPopup(popupContent);
     }
+    
 
     // Memuat data GeoJSON dan menambahkan ke peta
     function loadKabupatenLayer() {
