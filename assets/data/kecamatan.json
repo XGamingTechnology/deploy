@@ -3,7 +3,7 @@
         "image": "assets/images/kabupaten_bandung.png",
         "kecamatan": [
             {"name": "Arjasari", "image": "assets/images/arjasari.png"},
-            {"name": "Baleendah", "image": "assets/images/test.png"},
+            {"name": "Baleendah", "image": "assets/images/baleendah.png"},
             {"name": "Banjaran", "image": "assets/images/banjaran.png"},
             {"name": "Bojongsoang", "image": "assets/images/bojongsoang.png"},
             {"name": "Cangkuang", "image": "assets/images/cangkuang.png"},
