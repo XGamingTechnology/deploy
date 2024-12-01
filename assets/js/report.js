@@ -225,10 +225,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <th>No</th>
                 <th>Nama Kabupaten</th>
                 <th>Nama Kecamatan</th>
+                <th>Desa</th>
                 <th>Ruas Jalan</th>
                 <th>Tinggi Genangan</th>
                 <th>Luas Genangan</th>
                 <th>Kategori</th>
+                <th>X</th>
+                <th>Y</th>
             </tr>
         `;
     }
@@ -299,7 +302,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>1</td>
                         <td>${kabupaten}</td>
                         <td>${kecamatan}</td>
-                        <td colspan="3"></td> <!-- Empty cells for 'Ruas Jalan', 'Tinggi Genangan', 'Luas Genangan' -->
+                        <td colspan="4"></td> <!-- Empty cells for 'Ruas Jalan', 'Tinggi Genangan', 'Luas Genangan' -->
                         <td>${kategori}</td>
                     </tr>
                 `;
@@ -311,6 +314,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const kabupaten = feature.properties.KABUPATEN || 'Tidak tersedia';
                 const kecamatan = feature.properties.KECAMATAN || 'Tidak tersedia';
                 const namaJalan = feature.properties.NAMA_JALAN || 'Tidak tersedia';
+                const desa = feature.properties.DESA || 'Tidak tersedia';
+                const x = feature.properties.x || 'Tidak tersedia';
+                const y = feature.properties.Y || 'Tidak tersedia';
             
                 // Ensure that the units are added only if there is a numeric value
                 const tinggiGenangan = feature.properties.TINGGI_GEN ? `${feature.properties.TINGGI_GEN} m` : 'Tidak tersedia';
@@ -322,16 +328,18 @@ document.addEventListener('DOMContentLoaded', () => {
                         <td>${index + 1}</td>
                         <td>${kabupaten}</td>
                         <td>${kecamatan}</td>
+                        <td>${desa}</td>
                         <td>${namaJalan}</td>
                         <td>${tinggiGenangan}</td>
                         <td>${luasGenangan}</td>
                         <td>${kategori}</td>
+                        <td>${x}</td>
+                        <td>${y}</td>
                     </tr>
                 `;
             
                 dataTableBody.insertAdjacentHTML('beforeend', row);
-            });
-            
+            });       s     
         }
     }
     
