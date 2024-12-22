@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
             
                 dataTableBody.insertAdjacentHTML('beforeend', row);
-            });       s     
+            });  
         }
     }
     
