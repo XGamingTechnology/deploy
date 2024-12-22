@@ -92,8 +92,8 @@
 
     // Basemap options
     const basemaps = {
-        osm: L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(map), // Default
-        satellite: L.tileLayer.provider('Esri.WorldImagery'),
+        osm: L.tileLayer.provider('OpenStreetMap.Mapnik'), // Default
+        satellite: L.tileLayer.provider('Esri.WorldImagery').addTo(map),
         topo: L.tileLayer.provider('OpenTopoMap'),
         imagery: L.tileLayer.provider('Esri.WorldImagery'),
         outdoors: L.tileLayer.provider('Thunderforest.Outdoors')
@@ -116,7 +116,30 @@
         });
     });
 
-    var markerLayer, overallMarkerLayer, kecamatanLayer, kabupatenLayer; // Declare variables for layers
+    var markerLayer, overallMarkerLayer, kecamatanLayer, kabupatenLayer, kabNew, titiknew, area // Declare variables for layers
+
+    // Fungsi untuk memberi style pada polygon berdasarkan singel
+    function style_data_0_3() {
+        return {
+            color: 'black',  // Outline color
+            weight: 2.0, 
+            fill: true,
+            fillOpacity: 1,
+            fillColor: 'red',  // Fill color
+            interactive: true,
+        };
+    }
+    // Fungsi untuk memberi style pada polygon berdasarkan singel
+    function style_data_0_1() {
+        return {
+            color: 'yellow',  // Outline color
+            weight: 1.0, 
+            fill: true,
+            fillOpacity: 0.1,
+            fillColor: 'grey',  // Fill color
+            interactive: true,
+        };
+    }
 
     // Fungsi untuk memberi style pada polygon berdasarkan kategori
     function style_data_0_0(feature) {
@@ -277,6 +300,36 @@
         layer.bindPopup(popupContent);
     }
     
+    // Memuat data GeoJSON dan menambahkan ke peta
+    function loadnewarea() {
+        fetch('assets/data/ciparayp.geojson')
+            .then(response => response.json())
+            .then(data => {
+                area = L.geoJSON(data, {
+                    style: style_data_0_3,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(error => console.error('Error loading the GeoJSON data:', error));
+    }
+
+    // Call the function to load the kabupaten layer initially
+    loadnewarea();
+    // Memuat data GeoJSON dan menambahkan ke peta
+    function loadkabNew() {
+        fetch('assets/data/data.geojson')
+            .then(response => response.json())
+            .then(data => {
+                kabNew = L.geoJSON(data, {
+                    style: style_data_0_1,
+                    onEachFeature: onEachFeature
+                }).addTo(map);
+            })
+            .catch(error => console.error('Error loading the GeoJSON data:', error));
+    }
+
+    // Call the function to load the kabupaten layer initially
+    loadkabNew();
 
     // Memuat data GeoJSON dan menambahkan ke peta
     function loadKabupatenLayer() {
@@ -293,6 +346,33 @@
 
     // Call the function to load the kabupaten layer initially
     loadKabupatenLayer();
+
+    // Fungsi untuk menambahkan semua marker
+    function loadAllMarkers() {
+        fetch('assets/data/ciparyt.geojson')
+            .then(response => response.json())
+            .then(data => {
+                // Buat marker layer untuk seluruh data tanpa filter
+                titiknew = L.geoJSON(data, {
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng);  // Menambahkan marker pada titik tertentu
+                    },
+                    onEachFeature: onEachMarkerFeature  // Menambahkan pop-up pada setiap marker
+                }).addTo(map);
+
+                // Menyesuaikan peta untuk menampilkan semua marker
+                if (data.features.length > 0) {
+                    const bounds = markerLayer.getBounds();
+                    map.fitBounds(bounds);  // Adjusts the map view to fit all markers
+                }
+            })
+            .catch(error => console.error('Error loading the marker data:', error));
+    }
+
+    // Panggil fungsi untuk memuat semua marker saat halaman dimuat atau sesuai kebutuhan
+    loadAllMarkers();
+
+    
 
     // Fungsi untuk menambahkan marker berdasarkan Polygon_id yang dipilih
     function fetchMarkersForPolygon(polygonId) {
@@ -350,8 +430,34 @@
             .catch(error => console.error('Error loading the GeoJSON data:', error));
     }
 
-    // Menghubungkan checkbox Layer Kabupaten dengan layer kabupaten
+    document.getElementById('layer5').addEventListener('change', function(e) {
+        if (this.checked) {
+            if (!area) {
+                loadnewarea();
+            }
+        } else {
+            if (area) {
+                map.removeLayer(area);
+                area = null;
+            }
+        }
+    });
+
     document.getElementById('layer1').addEventListener('change', function(e) {
+        if (this.checked) {
+            if (!kabNew) {
+                loadkabNew();
+            }
+        } else {
+            if (kabNew) {
+                map.removeLayer(kabNew);
+                kabNew = null;
+            }
+        }
+    });
+
+    document.getElementById('layer6').addEventListener('change', function(e) {
+        // Menghubungkan checkbox Layer Kabupaten dengan layer kabupaten
         if (this.checked) {
             if (!kabupatenLayer) {
                 loadKabupatenLayer();
@@ -364,6 +470,21 @@
         }
     });
 
+    document.getElementById('layer7').addEventListener('change', function(e) {
+        // Menghubungkan checkbox Layer Kabupaten dengan layer kabupaten
+        if (this.checked) {
+            if (!titiknew) {
+                loadAllMarkers();
+            }
+        } else {
+            if (titiknew) {
+                map.removeLayer(titiknew);
+                titiknew = null;
+            }
+        }
+    });
+
+    
     // Menghubungkan checkbox Layer Marker dengan marker layer keseluruhan
     document.getElementById('layer2').addEventListener('change', function(e) {
         if (this.checked) {
@@ -385,6 +506,9 @@
             }
         }
     });
+
+    
+
 
     // Fungsi untuk mengisi dropdown dengan kecamatan dan menambahkan event listener
     fetch('assets/data/data.geojson')
