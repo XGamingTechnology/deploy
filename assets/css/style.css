@@ -725,7 +725,7 @@ h6 {
 }
 
 .sidebar-nav .nav-content {
-  padding: 5px 0 0 0;
+  padding: 5px 0 0 -1;
   margin: 0;
   list-style: none;
 }
