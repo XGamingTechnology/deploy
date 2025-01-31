@@ -127,14 +127,14 @@ fetch('assets/data/kecamatan.json')
 .catch(error => console.error('Error loading JSON:', error));
 
 // Fetch GeoJSON data
-fetch('assets/data/datatabelupdate.geojson')
+fetch('assets/data/titiktabelupdate_04.geojson')
 .then(response => response.json())
 .then(data => {
     geoJsonData = data.features;
 })
 .catch(error => console.error('Error loading GeoJSON:', error));
 
-fetch('assets/data/titiktabelupdate.geojson')
+fetch('assets/data/titikupdate.geojson')
 .then(response => response.json())
 .then(data => {
     titikGeoJsonData = data.features;
